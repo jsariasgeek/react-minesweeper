@@ -14,7 +14,7 @@ export default function Board(props) {
 
   useEffect(() => {
     const initBoardData = () => {
-      let data = createEmptyArray()
+      let data = createEmptyArray(width, height)
       data = plantMines(data, width, height, mines)
       data = getNeighboringMines(data, width, height)
       return data

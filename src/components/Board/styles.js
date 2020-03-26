@@ -1,6 +1,12 @@
 import styled from 'styled-components'
 
-export const BoardWrapper = styled.div``
+export const BoardWrapper = styled.div`
+  max-width:400px;
+  margin:0 auto;
+  padding:20px;
+  background:#48E5C2;
+  margin-top:15vh;
+`
 
 export const GameInfo = styled.div`
   margin-bottom:20px;
