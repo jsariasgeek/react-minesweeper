@@ -19,7 +19,7 @@ function Cell(props) {
   }
 
   return (
-    <CellWrapper>{getValue}</CellWrapper>
+    <CellWrapper>{getValue()}</CellWrapper>
   )
 
 }
@@ -31,7 +31,7 @@ Cell.propTypes = {
   neighboringMines: PropTypes.number
 }
 
-Cell.propTypes = {
+Cell.defaultProps = {
   isRevealed: false,
   isFlagged: false,
   isMine: false,

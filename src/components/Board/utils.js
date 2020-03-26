@@ -49,7 +49,7 @@ export const plantMines = (data, width, height, mines) => {
  * @param {*} data 
  */
 export const getNeighboringMines = (data, width, height) => {
-  let updatedData = data, index = 0
+  let updatedData = data
   for (let i = 0; i < height; i++) {
     for (let j = 0; j < width; j++) {
       if (!data[i][j].isMine) {
@@ -63,7 +63,7 @@ export const getNeighboringMines = (data, width, height) => {
         if (mine === 0) {
           updatedData[i][j].isEmpty = true
         }
-        updatedData[i][j].neighbour = mine
+        updatedData[i][j].neighboringMines = mine
       }
     }
   }
@@ -118,4 +118,44 @@ const traverseBoard = (x, y, data, width, height) => {
   }
 
   return el
+}
+
+export const revealEmpty = (x, y, data, width, height) => {
+  let area = traverseBoard(x, y, data, width, height)
+  const updatedData = data
+  area.map(cell => {
+    if (!cell.isFlagged && !cell.isRevelead && (cell.isEmpty || !cell.isMine)) {
+      updatedData[cell.x][cell.y].isRevelead = true
+      if (cell.isEmpty) {
+        revealEmpty(cell.x, cell.y, updatedData)
+      }
+    }
+  })
+  return updatedData
+}
+
+/** Get Hidden Cells */
+export const getHidden = data => {
+  let mineArray = []
+  data.map(dataRow => {
+    return dataRow.map(dataItem => {
+      if (!dataItem.isRevelead) {
+        mineArray.push(dataItem)
+      }
+    })
+  })
+  return mineArray
+}
+
+/**Get Flags */
+export const getFlags = data => {
+  let mineArray = []
+  data.map(dataRow => {
+    dataRow.map(dataItem => {
+      if (dataItem.isFlagged) {
+        mineArray.push(dataItem)
+      }
+    })
+  })
+  return mineArray
 }

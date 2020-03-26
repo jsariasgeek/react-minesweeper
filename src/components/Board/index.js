@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import PropTypes from 'prop-types'
 import { BoardWrapper, GameInfo, Clear } from './styles'
-import { createEmptyArray, plantMines, getNeighboringMines } from './utils'
+import { createEmptyArray, plantMines, getNeighboringMines, revealEmpty, getHidden, getFlags } from './utils'
 import Cell from './Cell'
 
 export default function Board(props) {
@@ -22,17 +22,68 @@ export default function Board(props) {
     setBoardData(initBoardData())
   }, [height, mines, width])
 
+  const revealBoard = () => {
+    let updatedData = boardData
+    updatedData.map(dataRow => {
+      return dataRow.map(dataItem => {
+        return dataItem.isRevealed = true
+      })
+    })
+    setBoardData(updatedData)
+  }
+
+  const handleCellClick = (x, y) => {
+    const cell = boardData[x][y]
+    // check if revealed. return if true
+    if (cell.isRevealed || cell.isFlagged) {
+      return null
+    }
+
+    // check if mine. game over if true
+    if (cell.isMine) {
+      setGameStatus("You Lost.")
+      revealBoard()
+      alert("Game Over")
+    }
+
+    let updatedData = boardData
+    const updatedCell = updatedData[x][y]
+    updatedCell.isFlagged = false
+    updatedCell.isRevealed = true
+    if (updatedCell.isEmpty) {
+      updatedData = revealEmpty(x, y, updatedData, width, height)
+    }
+    // if there is no mines left. You win the game.
+    if (getHidden(updatedData).length === mines) {
+      setMineCount(0)
+      setGameStatus("You Win.")
+      revealBoard()
+      alert("You Win")
+    }
+
+    setBoardData(updatedData)
+    setMineCount(mineCount - getFlags(updatedData).length)
+
+
+  }
+
   return (
     <BoardWrapper>
       <GameInfo>
         <h1>{gameStatus}</h1>
-        <span>Mines remaining:</span>
+        <span>Mines remaining: {mineCount}</span>
       </GameInfo>
       {boardData.map(dataRow => {
         return dataRow.map(dataItem => {
           return (
-            <div key={dataItem.x * dataRow.length + dataItem.y}>
-              <Cell {...dataItem}>{dataRow[dataRow.length - 1] === dataItem ? <Clear /> : ""}</Cell>
+            <div
+              key={dataItem.x * dataRow.length + dataItem.y}
+              onClick={() => handleCellClick(dataItem.x, dataItem.y)}>
+              <Cell
+                key={Math.random()}
+                {...dataItem}
+              />
+              {(dataRow[dataRow.length - 1] === dataItem) ? <Clear /> : ""}
             </div>
           )
         })
