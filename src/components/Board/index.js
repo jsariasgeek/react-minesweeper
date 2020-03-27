@@ -67,6 +67,13 @@ export default function Board(props) {
 
   }
 
+  const restartGame = () => {
+    let data = createEmptyArray(width, height)
+    data = plantMines(data, width, height, mines)
+    data = getNeighboringMines(data, width, height)
+    setBoardData(data)
+  }
+
   const handleContextMenu = (e, x, y) => {
     e.preventDefault()
     let updatedData = boardData
@@ -107,6 +114,7 @@ export default function Board(props) {
       <GameInfo>
         <h1>{gameStatus}</h1>
         <span>Mines remaining: {mineCount}</span>
+        <button onClick={restartGame}>Restart Game</button>
       </GameInfo>
       {boardData.map(dataRow => {
         return dataRow.map(dataItem => {
