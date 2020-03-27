@@ -19,12 +19,15 @@ function Cell(props) {
   }
 
   return (
-    <CellWrapper>{getValue()}</CellWrapper>
+    <CellWrapper {...props}>{getValue()}</CellWrapper>
   )
 
 }
 
 Cell.propTypes = {
+  x: PropTypes.number.isRequired,
+  y: PropTypes.number.isRequired,
+  isEmpty: PropTypes.bool, // The cell has/hasn't adjacent mines
   isRevealed: PropTypes.bool,
   isFlagged: PropTypes.bool,
   isMine: PropTypes.bool,
@@ -32,6 +35,7 @@ Cell.propTypes = {
 }
 
 Cell.defaultProps = {
+  isEmpty: true,
   isRevealed: false,
   isFlagged: false,
   isMine: false,

@@ -1,3 +1,5 @@
+import cloneDeep from 'lodash/cloneDeep'
+
 export function getRandomNumber(dimension) {
   return Math.floor((Math.random() * 1000) + 1) % dimension
 }
@@ -15,7 +17,7 @@ export const createEmptyArray = (width, height) => {
         y: j,
         isMine: false,
         neighboringMines: 0,
-        isRevelead: false,
+        isRevealed: false,
         isEmpty: false,
         isFlagged: false
       }
@@ -49,7 +51,7 @@ export const plantMines = (data, width, height, mines) => {
  * @param {*} data 
  */
 export const getNeighboringMines = (data, width, height) => {
-  let updatedData = data
+  let updatedData = cloneDeep(data)
   for (let i = 0; i < height; i++) {
     for (let j = 0; j < width; j++) {
       if (!data[i][j].isMine) {
@@ -122,16 +124,15 @@ const traverseBoard = (x, y, data, width, height) => {
 
 export const revealEmpty = (x, y, data, width, height) => {
   let area = traverseBoard(x, y, data, width, height)
-  const updatedData = data
-  area.map(cell => {
-    if (!cell.isFlagged && !cell.isRevelead && (cell.isEmpty || !cell.isMine)) {
-      updatedData[cell.x][cell.y].isRevelead = true
+  area.forEach(cell => {
+    if (!cell.isFlagged && !cell.isRevealed && (cell.isEmpty || !cell.isMine)) {
+      data[cell.x][cell.y].isRevealed = true
       if (cell.isEmpty) {
-        revealEmpty(cell.x, cell.y, updatedData)
+        revealEmpty(cell.x, cell.y, data)
       }
     }
   })
-  return updatedData
+  return data
 }
 
 /** Get Hidden Cells */
@@ -139,7 +140,7 @@ export const getHidden = data => {
   let mineArray = []
   data.map(dataRow => {
     return dataRow.map(dataItem => {
-      if (!dataItem.isRevelead) {
+      if (!dataItem.isRevealed) {
         mineArray.push(dataItem)
       }
     })
@@ -153,6 +154,19 @@ export const getFlags = data => {
   data.map(dataRow => {
     dataRow.map(dataItem => {
       if (dataItem.isFlagged) {
+        mineArray.push(dataItem)
+      }
+    })
+  })
+  return mineArray
+}
+
+/**Get Mines */
+export const getMines = data => {
+  let mineArray = []
+  data.forEach(dataRow => {
+    dataRow.forEach(dataItem => {
+      if (dataItem.isMine) {
         mineArray.push(dataItem)
       }
     })

@@ -4,7 +4,7 @@ export const BoardWrapper = styled.div`
   max-width:400px;
   margin:0 auto;
   padding:20px;
-  background:#48E5C2;
+  background:#00a883;
   margin-top:15vh;
 `
 
